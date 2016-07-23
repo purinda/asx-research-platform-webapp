@@ -1,12 +1,11 @@
 var Announcement = Backbone.Model.extend({
     defaults: {
-        headline: 'Untitled',
-        symbol: 'XXX',
-        price_sensitive: 0,
-        pages: 0,
-        url: '',
-        published_date: '',
-        time_received: ''
+        headline: null,
+        price_sensitive: null,
+        pages: null,
+        url: null,
+        published_date: null,
+        time_received: null
     },
     url: function () {
         return appParameters.get('endpoint') + 'announcements/' + (this.id ? this.id : '')
@@ -21,10 +20,13 @@ var Announcement = Backbone.Model.extend({
     }
 })
 
-var AnnouncementCollection = Backbone.Collection.extend({
+var SectorAnnouncementCollection = Backbone.Collection.extend({
     model: Announcement,
-    url: appParameters.get('endpoint') + 'announcements',
-
+    initialize: function (sectorId) {
+        if (sectorId) {
+            this.url = appParameters.get('endpoint') + 'sector-announcements/' + sectorId + '?include=announcement'
+        }
+    },
     parse: function (response) {
         return response.data;
     }
@@ -32,5 +34,5 @@ var AnnouncementCollection = Backbone.Collection.extend({
 
 export {
     Announcement,
-    AnnouncementCollection
+    SectorAnnouncementCollection
 }

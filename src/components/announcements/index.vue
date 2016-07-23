@@ -7,11 +7,11 @@
 </template>
 
 <script>
-    var AnnouncementCollection = require('../../models/announcement').AnnouncementCollection
+    var TableAnnouncementCollection = require('../../models/table/table-announcement').TableAnnouncementCollection
 
     // Required to be defined outside the component definition to initialise the backbone collection for component
     // to start using data structure
-    var collection = new AnnouncementCollection()
+    var collection = new TableAnnouncementCollection
 
     module.exports = {
         name: 'announcements-list',
@@ -28,11 +28,11 @@
                     listColumns: {
                         price_sensitive: [
                             {
-                                value: 1,
+                                value: 'yes',
                                 text: 'Price Sensitive'
                             },
                             {
-                                value: 0,
+                                value: 'no',
                                 text: 'Regular'
                             }
                         ]
@@ -42,10 +42,6 @@
         },
         methods: {
             forceFetch: function() {
-                if (this.announcementCollection == null) {
-                    this.announcementCollection = new AnnouncementCollection
-                }
-
                 this.announcementCollection.fetch()
             }
         },

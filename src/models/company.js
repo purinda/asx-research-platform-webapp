@@ -2,7 +2,10 @@ var Company = Backbone.Model.extend({
     defaults: {
         id: null,
         symbol: null,
-        name: ''
+        name: '',
+        sector: null,
+        static_chart_intraday: null,
+        static_chart_7d: null
     },
     parse: function (response) {
         // Per item GET will have 'data' property

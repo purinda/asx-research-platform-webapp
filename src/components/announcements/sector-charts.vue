@@ -27,7 +27,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="announcement in company.announcements">
+                        <tr v-for="announcement in company.announcement.data">
                             <td class="col-xs-8">{{ announcement.headline }}</td>
                             <td class="col-xs-1">{{ announcement.pages }}</td>
                             <td class="col-xs-2">{{ announcement.published_date }}</td>
@@ -41,10 +41,10 @@
             </div>
             <div class="row">
                 <div class="col-xs-6">
-                    <img class="img-thumbnail" width="100%" v-bind:src="company.chart_1d_url"/>
+                    <img class="img-thumbnail" width="100%" v-bind:src="company.static_chart_intraday"/>
                 </div>
                 <div class="col-xs-6">
-                    <img class="img-thumbnail" width="100%" v-bind:src="company.chart_1w_url"/>
+                    <img class="img-thumbnail" width="100%" v-bind:src="company.static_chart_7d"/>
                 </div>
             </div>
         </div>
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-    var CompanyAnnouncementCollection = require('../../models/company-announcement').CompanyAnnouncementCollection
+    var SectorAnnouncementCollection = require('../../models/announcement').SectorAnnouncementCollection
 
     module.exports = {
         name: 'sector-charts',
@@ -67,18 +67,16 @@
         },
         methods: {
             forceFetch: function (sectorId) {
-                this.announcementCollection = new CompanyAnnouncementCollection(sectorId)
+                this.announcementCollection = new SectorAnnouncementCollection(sectorId)
                 this.announcementCollection.fetch()
             }
         },
         route: {
             activate: function (t) {
-                this.$parent.$parent.$data.title = 'Recent Announcements'
-
                 // Fetch from the API endpoint
                 this.forceFetch(this.$route.params.sector)
-
                 this.data = this.announcementCollection.toJSON()
+                this.$parent.$parent.$data.title = this.data[0].sector + ' Sector'
 
                 t.next()
             }

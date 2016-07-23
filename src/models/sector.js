@@ -1,9 +1,6 @@
 var Sector = Backbone.Model.extend({
     defaults: {
         name: 'Untitled',
-        number_of_companies: 0,
-        number_of_announcements: 0,
-        number_of_ps_announcements: 0
     },
     url: function () {
         return appParameters.get('endpoint') + 'sector/' + (this.id ? this.id : '')
