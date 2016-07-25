@@ -1,4 +1,13 @@
 /**
+ * Vue debug parameters
+ *
+ * @type {Vue}
+ */
+var Vue = require('vue')
+Vue.config.warnExpressionErrors = false
+Vue.config.debug = true
+
+/**
  * Web app configuration
  *
  * Configuration thats imported into the bundle based

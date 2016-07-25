@@ -21,16 +21,16 @@
                         <thead>
                         <tr>
                             <th></th>
-                            <th>Pages</th>
                             <th>Published Date</th>
+                            <th>Received Date</th>
                             <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-for="announcement in company.announcement.data">
-                            <td class="col-xs-8">{{ announcement.headline }}</td>
-                            <td class="col-xs-1">{{ announcement.pages }}</td>
+                            <td class="col-xs-7">{{ announcement.headline }} ({{ announcement.pages }} pages)</td>
                             <td class="col-xs-2">{{ announcement.published_date }}</td>
+                            <td class="col-xs-2">{{ announcement.time_received }}</td>
                             <td class="col-xs-1"><a class="btn btn-xs btn-primary" target="_blank"
                                                     href="https://www.asx.com.au{{ announcement.url }}">PDF</a>
                             </td>
@@ -40,11 +40,17 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-6">
+                <div class="col-lg-4 col-md-6 col-sm-12 text-center">
                     <img class="img-thumbnail" width="100%" v-bind:src="company.static_chart_intraday"/>
+                    <strong>Intraday</strong>
                 </div>
-                <div class="col-xs-6">
+                <div class="col-lg-4 col-md-6 hidden-xs hidden-sm text-center">
                     <img class="img-thumbnail" width="100%" v-bind:src="company.static_chart_7d"/>
+                    <strong>Last 7 Days</strong>
+                </div>
+                <div class="col-lg-4 hidden-xs hidden-sm hidden-md text-center">
+                    <img class="img-thumbnail" width="100%" v-bind:src="company.static_chart_30d"/>
+                    <strong>Last 30 Days</strong>
                 </div>
             </div>
         </div>

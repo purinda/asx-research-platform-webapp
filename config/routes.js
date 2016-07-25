@@ -28,6 +28,9 @@ router.map({
     },
     '/announcements/sector-charts/:sector': {
         component: require('src/components/announcements/sector-charts.vue')
+    },
+    '/screener': {
+        component: require('src/components/screener/screener.vue')
     }
 })
 

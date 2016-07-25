@@ -15,8 +15,8 @@ module.exports = [
         icon: 'fa-filter',
     },
     {
-        name: 'Configurations',
-        link: '/configurations',
+        name: 'Screener',
+        link: '/screener',
         icon: 'fa-cogs'
     }
 ]

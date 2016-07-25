@@ -19,7 +19,7 @@
             return {
                 announcementCollection: collection,
                 data: collection.toJSON(),
-                columns: ['published_date', 'symbol', 'price_sensitive', 'headline', 'sector'],
+                columns: ['sector', 'symbol', 'headline', 'price_sensitive', 'published_date'],
                 tableOptions: {
                     perPage: 100,
                     templates: {
@@ -28,12 +28,12 @@
                     listColumns: {
                         price_sensitive: [
                             {
-                                value: 'yes',
-                                text: 'Price Sensitive'
+                                value: true,
+                                text: 'Yes'
                             },
                             {
-                                value: 'no',
-                                text: 'Regular'
+                                value: false,
+                                text: 'No'
                             }
                         ]
                     }
