@@ -1,32 +1,48 @@
+<style>
+    div.row label {
+        padding-left: 15px;
+    }
+
+    form button {
+        padding-top: 20px;
+    }
+</style>
 <template>
-    <div>
+    <form>
         <div v-for="field in fields" class="row">
-            <div class="col-xs-12">
-                {{ field.display_name }} ({{ field.measurement_type }})
-                <div class="form-group">
-                    <div class="col-xs-6">
-                        <div class="input-group">
-                            <div class="input-group-addon">Min</div>
-                            <input v-model="filters[field.field].min" min="{{ field.min }}" max="{{ field.max }}"
-                                   type="range" class="form-control" id="{{ field.field }}">
-                        </div>
+            <label>{{ field.display_name }} ({{ field.measurement_type }}{{ format(filters[field.field].min) }} to {{ field.measurement_type }}{{ format(filters[field.field].max) }})</label>
+            <div class="form-group">
+                <div class="col-xs-6">
+                    <div class="input-group">
+                        <div class="input-group-addon">Min</div>
+                        <input v-model="filters[field.field].min" min="{{ field.min }}" max="{{ field.max }}"
+                               type="range" class="form-control" id="{{ field.field }}">
                     </div>
-                    <div class="col-xs-6">
-                        <div class="input-group">
-                            <input v-model="filters[field.field].max" min="{{ field.min }}" max="{{ field.max }}"
-                                   type="range" class="form-control">
-                            <div class="input-group-addon">Max</div>
-                        </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="input-group">
+                        <input v-model="filters[field.field].max" min="{{ field.min }}" max="{{ field.max }}"
+                               type="range" class="form-control">
+                        <div class="input-group-addon">Max</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <pre v-if="debug">{{ filters | json}}</pre>
-    </div>
+        <br>
+        <button @click="fetch" type="button" class="btn btn-primary pull-left">Fetch</button>
+        <br>
+        <div class="row">
+            <div class="col-xs-12">
+                <v-client-table :data="[]" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
+            </div>
+        </div>
+        <!--<pre v-if="debug">{{ filters | json}}</pre>-->
+    </form>
 </template>
 
 <script>
+    var numeral = require('numeral')
     var CompanyScreener = require('../../models/filters/company-screener').CompanyScreener
     var RangeFieldCollection = require('../../models/filters/range-field').RangeFieldCollection
 
@@ -40,15 +56,40 @@
         data: function () {
             return {
                 screener: screener,
-                companies: screener.toJSON(),
                 filters: {},
                 fields: [],
-                debug: true
+                debug: true,
+                tableOptions: {
+                    perPage: 100,
+                    templates: {
+                        view: "<a target=_blank href='http://www.asx.com.au{url}'>PDF</a>",
+                        symbol: "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/{symbol}'>{symbol}</a>",
+                        intra_day: '<img class="img-thumbnail" width="100%" src="{static_chart_intraday}"/>',
+                        weekly: '<img class="img-thumbnail" width="100%" src="{static_chart_7d}"/>',
+                    },
+                    listColumns: {
+                        price_sensitive: [
+                            {
+                                value: true,
+                                text: 'Yes'
+                            },
+                            {
+                                value: false,
+                                text: 'No'
+                            }
+                        ]
+                    }
+                },
+                columns: ['sector', 'symbol', 'headline', 'price_sensitive', 'published_date']
             }
         },
         methods: {
+            format: function (value) {
+                return numeral(value).format('0.00a')
+            },
             fetch: function () {
-                this.screener.fetch({market_capitalisation: 'test'})
+                this.screener.fetch(this.filters)
+                this.$refs.table.data = this.screener.toJSON()
             }
         },
         created: function () {
@@ -59,13 +100,6 @@
         route: {
             activate: function (t) {
                 this.$parent.$parent.$data.title = 'Securities Screener'
-
-                // Fetch from the API endpoint
-                this.fetch()
-
-                // Reload vue-table
-                this.companies = this.screener.toJSON()
-
 
                 t.next()
             }
