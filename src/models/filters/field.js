@@ -1,11 +1,12 @@
-var RangeField = Backbone.Model.extend({
+var Field = Backbone.Model.extend({
     defaults: {
         field: null,
+        type: null,
         display_name: '',
         measurement_type: '',
         min: 0,
         max: 0,
-        help: ''
+        help: null
     },
     parse: function (response) {
         // Per item GET will have 'data' property
@@ -17,8 +18,8 @@ var RangeField = Backbone.Model.extend({
     }
 })
 
-var RangeFieldCollection = Backbone.Collection.extend({
-    model: RangeField,
+var FieldCollection = Backbone.Collection.extend({
+    model: Field,
     url: appParameters.get('endpoint') + 'screener/fields',
     parse: function (response) {
         return response.data;
@@ -26,6 +27,6 @@ var RangeFieldCollection = Backbone.Collection.extend({
 })
 
 export {
-    RangeField,
-    RangeFieldCollection
+    Field,
+    FieldCollection
 }

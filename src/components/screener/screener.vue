@@ -6,32 +6,63 @@
     form button {
         padding-top: 20px;
     }
+
 </style>
 <template>
     <form>
         <div v-for="field in fields" class="row">
-            <label>{{ field.display_name }} ({{ field.measurement_type }}{{ format(filters[field.field].min) }} to {{ field.measurement_type }}{{ format(filters[field.field].max) }})</label>
-            <div class="form-group">
-                <div class="col-xs-6">
-                    <div class="input-group">
-                        <div class="input-group-addon">Min</div>
-                        <input v-model="filters[field.field].min" min="{{ field.min }}" max="{{ field.max }}"
-                               type="range" class="form-control" id="{{ field.field }}">
+            <div v-if="field.type == 'RANGE'">
+                <label>
+                    <input type="checkbox" title="Filter Enable/Disable">
+                    {{ field.display_name }} ({{ field.measurement_type }}{{ format(filters[field.field].min) }}
+                    to
+                    {{ field.measurement_type }}{{ format(filters[field.field].max) }})</label>
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <div class="input-group">
+                            <div class="input-group-addon">Min</div>
+                            <input v-model="filters[field.field].min" min="{{ field.min }}" max="{{ field.max }}"
+                                   type="range" class="form-control" id="{{ field.field }}">
+                        </div>
                     </div>
-                </div>
-                <div class="col-xs-6">
-                    <div class="input-group">
-                        <input v-model="filters[field.field].max" min="{{ field.min }}" max="{{ field.max }}"
-                               type="range" class="form-control">
-                        <div class="input-group-addon">Max</div>
+                    <div class="col-xs-6">
+                        <div class="input-group">
+                            <input v-model="filters[field.field].max" min="{{ field.min }}" max="{{ field.max }}"
+                                   type="range" class="form-control">
+                            <div class="input-group-addon">Max</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <br>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Filter Options</h3>
+            </div>
+
+            <div class="panel-body">
+                <form>
+                    <div class="form-group">
+                        <div v-for="field in fields" class="row">
+                            <div v-if="field.type == 'OPTION'">
+                                <label>
+                                    <input type="checkbox"
+                                           v-model="filters[field.field].checked">
+                                    {{ field.display_name }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <br>
         <button @click="fetch" type="button" class="btn btn-primary pull-left">Fetch</button>
         <br>
+
         <div class="row">
             <div class="col-xs-12">
                 <v-client-table :data="[]" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
@@ -44,12 +75,12 @@
 <script>
     var numeral = require('numeral')
     var CompanyScreener = require('../../models/filters/company-screener').CompanyScreener
-    var RangeFieldCollection = require('../../models/filters/range-field').RangeFieldCollection
+    var FieldCollection = require('../../models/filters/field').FieldCollection
 
     // Required to be defined outside the component definition to initialise the backbone collection for component
     // to start using data structure
     var screener = new CompanyScreener()
-    var fields = new RangeFieldCollection()
+    var fields = new FieldCollection()
 
     module.exports = {
         name: 'screener-filter',
@@ -99,7 +130,7 @@
         },
         route: {
             activate: function (t) {
-                this.$parent.$parent.$data.title = 'Securities Screener'
+                this.$parent.$parent.$data.title = 'Securities and Announcements Screener'
 
                 t.next()
             }
