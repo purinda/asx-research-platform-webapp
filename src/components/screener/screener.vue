@@ -13,7 +13,7 @@
         <div v-for="field in fields" class="row">
             <div v-if="field.type == 'RANGE'">
                 <label>
-                    <input type="checkbox" title="Filter Enable/Disable">
+                    <input type="checkbox" title="Filter Enable/Disable" v-model="filters[field.field].enabled" checked>
                     {{ field.display_name }} ({{ field.measurement_type }}{{ format(filters[field.field].min) }}
                     to
                     {{ field.measurement_type }}{{ format(filters[field.field].max) }})</label>
@@ -60,7 +60,7 @@
         </div>
 
         <br>
-        <button @click="fetch" type="button" class="btn btn-primary pull-left">Fetch</button>
+        <button @click="fetch" type="button" class="btn btn-primary pull-left">Lookup</button>
         <br>
 
         <div class="row">
@@ -93,7 +93,14 @@
                 tableOptions: {
                     perPage: 100,
                     templates: {
-                        view: "<a target=_blank href='http://www.asx.com.au{url}'>PDF</a>",
+                        headline: function (row) {
+                            if (row.headline) {
+                                return "<a target=_blank href='http://www.asx.com.au' + row.url >" + row.headline +
+                                       "</a>"
+                            } else {
+                                return '';
+                            }
+                        },
                         symbol: "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/{symbol}'>{symbol}</a>",
                         intra_day: '<img class="img-thumbnail" width="100%" src="{static_chart_intraday}"/>',
                         weekly: '<img class="img-thumbnail" width="100%" src="{static_chart_7d}"/>',
