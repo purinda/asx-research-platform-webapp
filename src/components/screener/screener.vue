@@ -81,6 +81,18 @@
             <v-client-table :data="[]" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
         </div>
     </div>
+
+    <modal :show.sync="chartLarge" cancel-text=false>
+        <div slot="modal-header" class="modal-header">
+            <h4 class="modal-title">Chart</h4>
+        </div>
+        <div slot="modal-body" class="modal-body">
+            <img width="100%" src="{{ chartLargeUrl }}"/>
+        </div>
+        <div slot="modal-footer" class="modal-footer">
+            <button type="button" class="btn btn-default" @click='chartLarge = false'>Close</button>
+        </div>
+    </modal>
 </template>
 
 <script>
@@ -98,6 +110,8 @@
         data: function () {
             return {
                 screener: screener,
+                chartLarge: false,
+                chartLargeUrl: '',
                 filters: {},
                 fields: [],
                 debug: true,
@@ -114,8 +128,8 @@
                         },
                         one_year_price: "<span class='year-low'>{year_low}</span>, <span class='current-price'>{last_trade_price}</span>, <span class='year-high'>{year_high}</span>",
                         symbol: "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/{symbol}'>{symbol}</a>",
-                        intra_day: '<img class="img-thumbnail" width="100%" src="{static_chart_intraday}"/>',
-                        weekly: '<img class="img-thumbnail" width="100%" src="{static_chart_7d}"/>',
+                        intra_day: '<a href="javascript:void(0);" @click=\'this.$parent.enlarge("{static_chart_intraday}")\'><img class="img-thumbnail" width="100%" src="{static_chart_intraday}"/></a>',
+                        weekly: '<a href="javascript:void(0);" @click=\'this.$parent.enlarge("{static_chart_7d}")\'><img class="img-thumbnail" width="100%" src="{static_chart_7d}"/></a>',
                     },
                     listColumns: {
                         price_sensitive: [
@@ -130,10 +144,14 @@
                         ]
                     }
                 },
-                columns: ['sector', 'symbol', 'headline', 'price_sensitive', 'one_year_price', 'published_date']
+                columns: ['sector', 'symbol', 'headline', 'price_sensitive', 'one_year_price', 'published_date', 'intra_day', 'weekly']
             }
         },
         methods: {
+            enlarge: function (url) {
+                this.chartLargeUrl = url
+                this.chartLarge = true
+            },
             format: function (value) {
                 return numeral(value).format('0.00a')
             },

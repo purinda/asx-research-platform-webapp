@@ -1,4 +1,5 @@
 var Vue = require('vue')
+import {alert, modal} from 'vue-strap'
 
 /**
  * Install/Enable Plugins in the Global Vue context
@@ -12,6 +13,10 @@ function install() {
         compileTemplates: true,
         filterByColumn: true
     })
+
+    // VueStrap components
+    Vue.component('alert', alert)
+    Vue.component('modal', modal)
 
     // Load spinner plugin for jQuery AJAX calls
     require('../assets/plugins/spinner')
