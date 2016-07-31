@@ -7,7 +7,7 @@ Vue.use(Router)
 // Get an instance of the router
 var router = new Router({
     saveScrollPosition: true,
-    transitionOnLoad: true
+    transitionOnLoad: false
 })
 
 router.map({

@@ -62,14 +62,13 @@
         <br>
         <button @click="fetch" type="button" class="btn btn-primary pull-left">Lookup</button>
         <br>
-
-        <div class="row">
-            <div class="col-xs-12">
-                <v-client-table :data="[]" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
-            </div>
-        </div>
-        <!--<pre v-if="debug">{{ filters | json}}</pre>-->
     </form>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <v-client-table :data="[]" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -95,12 +94,13 @@
                     templates: {
                         headline: function (row) {
                             if (row.headline) {
-                                return "<a target=_blank href='http://www.asx.com.au' + row.url >" + row.headline +
-                                       "</a>"
+                                return '<a target=_blank href="http://www.asx.com.au' + row.url + '">' + row.headline +
+                                       '</a>'
                             } else {
                                 return '';
                             }
                         },
+                        price_change: "L({year_low}), C({last_trade_price}), H({year_high})",
                         symbol: "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/{symbol}'>{symbol}</a>",
                         intra_day: '<img class="img-thumbnail" width="100%" src="{static_chart_intraday}"/>',
                         weekly: '<img class="img-thumbnail" width="100%" src="{static_chart_7d}"/>',
@@ -118,7 +118,7 @@
                         ]
                     }
                 },
-                columns: ['sector', 'symbol', 'headline', 'price_sensitive', 'published_date']
+                columns: ['sector', 'symbol', 'headline', 'price_sensitive', 'price_change', 'published_date']
             }
         },
         methods: {
