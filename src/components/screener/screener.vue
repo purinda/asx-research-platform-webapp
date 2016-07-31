@@ -7,6 +7,18 @@
         padding-top: 20px;
     }
 
+    .year-low {
+        color: orangered;
+    }
+
+    .year-high {
+        color: green;
+    }
+
+    .current-price {
+        color: dimgray;
+    }
+
 </style>
 <template>
     <form>
@@ -100,7 +112,7 @@
                                 return '';
                             }
                         },
-                        price_change: "L({year_low}), C({last_trade_price}), H({year_high})",
+                        one_year_price: "<span class='year-low'>{year_low}</span>, <span class='current-price'>{last_trade_price}</span>, <span class='year-high'>{year_high}</span>",
                         symbol: "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/{symbol}'>{symbol}</a>",
                         intra_day: '<img class="img-thumbnail" width="100%" src="{static_chart_intraday}"/>',
                         weekly: '<img class="img-thumbnail" width="100%" src="{static_chart_7d}"/>',
@@ -118,7 +130,7 @@
                         ]
                     }
                 },
-                columns: ['sector', 'symbol', 'headline', 'price_sensitive', 'price_change', 'published_date']
+                columns: ['sector', 'symbol', 'headline', 'price_sensitive', 'one_year_price', 'published_date']
             }
         },
         methods: {
