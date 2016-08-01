@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Update API codebase
-ssh -i .ssh/private-projects.pem ubuntu@asx.purinda.com git --git-dir=/var/www/asx/asx-platform-api/.git --work-tree=/var/www/asx/asx-platform-api/ pull origin master
+ssh -i ~/.ssh/private-projects.pem ubuntu@asx.purinda.com git --git-dir=/var/www/asx/asx-platform-api/.git --work-tree=/var/www/asx/asx-platform-api/ pull origin master
 
 npm run build
 tar cf /tmp/asx-deploy.tar.gz dist/ index.html 

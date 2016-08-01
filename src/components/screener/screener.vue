@@ -18,7 +18,6 @@
     .current-price {
         color: dimgray;
     }
-
 </style>
 <template>
     <form>
@@ -87,7 +86,7 @@
             <h4 class="modal-title">Chart</h4>
         </div>
         <div slot="modal-body" class="modal-body">
-            <img width="100%" src="{{ chartLargeUrl }}"/>
+            <img width="100%" :src="chartLargeUrl"/>
         </div>
         <div slot="modal-footer" class="modal-footer">
             <button type="button" class="btn btn-default" @click='chartLarge = false'>Close</button>
@@ -127,7 +126,7 @@
                             }
                         },
                         one_year_price: "<span class='year-low'>{year_low}</span>, <span class='current-price'>{last_trade_price}</span>, <span class='year-high'>{year_high}</span>",
-                        symbol: "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/{symbol}'>{symbol}</a>",
+                        symbol: "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/{symbol}'>{symbol}</a> (<a target=_blank href='http://hotcopper.com.au/asx/{symbol}'>HC</a>)",
                         intra_day: '<a href="javascript:void(0);" @click=\'this.$parent.enlarge("{static_chart_intraday}")\'><img class="img-thumbnail" width="100%" src="{static_chart_intraday}"/></a>',
                         weekly: '<a href="javascript:void(0);" @click=\'this.$parent.enlarge("{static_chart_7d}")\'><img class="img-thumbnail" width="100%" src="{static_chart_7d}"/></a>',
                     },
