@@ -145,11 +145,11 @@
                 </tr>
                 <tr>
                     <td>Avg. Volume</td>
-                    <td>{{ livePriceData.avg_daily_volume }}</td>
+                    <td>{{ livePriceData.avg_daily_volume }} ({{ format(livePriceData.avg_daily_volume) }})</td>
                 </tr>
                 <tr v-bind:class="{ 'success': livePriceData.volume_change_percentage > 100, 'danger': livePriceData.volume_change_percentage < 100 }">
                     <td>Volume</td>
-                    <td>{{ livePriceData.volume }}</td>
+                    <td>{{ livePriceData.volume }} ({{ format(livePriceData.volume) }})</td>
                 </tr>
                 <tr v-bind:class="{ 'success': livePriceData.volume_change_percentage > 100, 'danger': livePriceData.volume_change_percentage < 100 }">
                     <td>Percentage Vol. Increase</td>
@@ -231,7 +231,7 @@
                         symbol: function (row) {
                             return "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/" + row.symbol + "'\>"
                                     + row.symbol + "</a> (<a target=_blank href='http://hotcopper.com.au/asx/" + row.symbol + "'>HC</a>)<br>" +
-                                    "AU$ " + Utility.formatMoney(row.mkt_cap)
+                                    "AU$ " + Utility.humanFriendlyNumber(row.mkt_cap)
                         },
 
                         intra_day: '<a href="javascript:void(0);" ' +
@@ -273,7 +273,7 @@
                 this.chartLarge = true
             },
             format: function (value) {
-                return Utility.formatMoney(value)
+                return Utility.humanFriendlyNumber(value)
             },
             fetchLivePrice: function (symbol) {
                 if (!symbol) {

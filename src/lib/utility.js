@@ -1,7 +1,7 @@
 var numeral = require('numeral')
 
 class Utility {
-    formatMoney(value) {
+    humanFriendlyNumber(value) {
         return numeral(value).format('0.00a')
     }
 }
