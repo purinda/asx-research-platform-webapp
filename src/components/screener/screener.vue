@@ -119,7 +119,7 @@
 </template>
 
 <script>
-    var numeral = require('numeral')
+    import Utility from '../../lib/utility'
     var CompanyScreener = require('../../models/filters/company-screener').CompanyScreener
     var FieldCollection = require('../../models/filters/field').FieldCollection
 
@@ -153,8 +153,11 @@
                         "<span class='current-price'>{last_trade_price}</span>, " +
                         "<span class='year-high'>{year_high}</span>",
 
-                        symbol: "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/{symbol}'>" +
-                        "{symbol}</a> (<a target=_blank href='http://hotcopper.com.au/asx/{symbol}'>HC</a>)",
+                        symbol: function(row) {
+                            return "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/" + row.symbol + "'\>"
+                                    + row.symbol + "</a> (<a target=_blank href='http://hotcopper.com.au/asx/" + row.symbol + "'>HC</a>)<br>" +
+                            Utility.formatMoney(row.mkt_cap)
+                        },
 
                         intra_day: '<a href="javascript:void(0);" ' +
                         '@click=\'this.$parent.enlarge("{static_chart_intraday}")\'>' +
@@ -195,7 +198,7 @@
                 this.chartLarge = true
             },
             format: function (value) {
-                return numeral(value).format('0.00a')
+                return Utility.formatMoney(value)
             },
             fetch: function () {
                 this.screener.fetch(this.filters)
