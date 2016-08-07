@@ -6,7 +6,7 @@ var Field = Backbone.Model.extend({
         measurement_type: '',
         min: 0,
         max: 0,
-        enabled: true,
+        enabled: false,
         help: null
     },
     parse: function (response) {
