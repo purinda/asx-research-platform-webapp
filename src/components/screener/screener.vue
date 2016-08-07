@@ -100,11 +100,10 @@
     </form>
 
     <div class="row">
-        <div class="col-xs-12">
-            <v-client-table :data="[]" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
-        </div>
+        <v-client-table :data="[]" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
     </div>
 
+    <!-- Chart: Large Modal -->
     <modal :show.sync="chartLarge" cancel-text=false>
         <div slot="modal-header" class="modal-header">
             <h4 class="modal-title">Chart</h4>
@@ -116,17 +115,90 @@
             <button type="button" class="btn btn-default" @click='chartLarge = false'>Close</button>
         </div>
     </modal>
+
+    <!-- Live Data: Large Modal -->
+    <modal :show.sync="showLivePrice" cancel-text=false>
+        <div slot="modal-header" class="modal-header">
+            <h4 class="modal-title">Live Price</h4>
+        </div>
+        <div slot="modal-body" class="modal-body">
+            <table class="table table-condensed table-hover borderless">
+                <tr>
+                    <td>Instrument</td>
+                    <td>{{ livePriceData.symbol }}</td>
+                </tr>
+                <tr>
+                    <td>Retrieved At</td>
+                    <td>{{ livePriceData.created_at }}</td>
+                </tr>
+                <tr>
+                    <td>Last Trade At</td>
+                    <td>{{ livePriceData.last_trade_time }}</td>
+                </tr>
+                <tr v-bind:class="{ 'success': livePriceData.movement > 0, 'danger': livePriceData.movement < 0}">
+                    <td>Gain</td>
+                    <td>{{ livePriceData.movement }}</td>
+                </tr>
+                <tr v-bind:class="{ 'success': livePriceData.movement > 0, 'danger': livePriceData.movement < 0}">
+                    <td>Gain %</td>
+                    <td>{{ livePriceData.movement_percent }}%</td>
+                </tr>
+                <tr>
+                    <td>Avg. Volume</td>
+                    <td>{{ livePriceData.avg_daily_volume }}</td>
+                </tr>
+                <tr v-bind:class="{ 'success': livePriceData.volume_change_percentage > 100, 'danger': livePriceData.volume_change_percentage < 100 }">
+                    <td>Volume</td>
+                    <td>{{ livePriceData.volume }}</td>
+                </tr>
+                <tr v-bind:class="{ 'success': livePriceData.volume_change_percentage > 100, 'danger': livePriceData.volume_change_percentage < 100 }">
+                    <td>Percentage Vol. Increase</td>
+                    <td>{{ livePriceData.volume_change_percentage }}%</td>
+                </tr>
+                <tr>
+                    <td>Ask</td>
+                    <td>{{ livePriceData.ask }}</td>
+                </tr>
+                <tr>
+                    <td>Bid</td>
+                    <td>{{ livePriceData.bid }}</td>
+                </tr>
+                <tr>
+                    <td>Last</td>
+                    <td>{{ livePriceData.last }}</td>
+                </tr>
+                <tr>
+                    <td>Open</td>
+                    <td>{{ livePriceData.open }}</td>
+                </tr>
+                <tr>
+                    <td>High</td>
+                    <td>{{ livePriceData.high }}</td>
+                </tr>
+                <tr>
+                    <td>Low</td>
+                    <td>{{ livePriceData.low }}</td>
+                </tr>
+            </table>
+        </div>
+        <div slot="modal-footer" class="modal-footer">
+            <button type="button" class="btn btn-default" @click='showLivePrice = false'>Close</button>
+        </div>
+    </modal>
+
 </template>
 
 <script>
     import Utility from '../../lib/utility'
     var CompanyScreener = require('../../models/filters/company-screener').CompanyScreener
     var FieldCollection = require('../../models/filters/field').FieldCollection
+    var LiveQuote = require('../../models/live-quote').LiveQuote
 
     // Required to be defined outside the component definition to initialise the backbone collection for component
     // to start using data structure
     var screener = new CompanyScreener()
     var fields = new FieldCollection()
+    var quote = new LiveQuote()
 
     module.exports = {
         name: 'screener-filter',
@@ -134,6 +206,8 @@
             return {
                 screener: screener,
                 chartLarge: false,
+                showLivePrice: false,
+                livePriceData: quote.toJSON(),
                 chartLargeUrl: '',
                 filters: {},
                 fields: [],
@@ -149,14 +223,15 @@
                                 return '';
                             }
                         },
-                        one_year_price: "<span class='year-low'>{year_low}</span>, " +
+                        price_information: "<span class='year-low'>{year_low}</span>, " +
                         "<span class='current-price'>{last_trade_price}</span>, " +
-                        "<span class='year-high'>{year_high}</span>",
+                        "<span class='year-high'>{year_high}</span><br>" +
+                        "<button @click='this.$parent.fetchLivePrice(\"{symbol}\")' type='button' class='btn btn-danger btn-xs'>Live Price</button>",
 
-                        symbol: function(row) {
+                        symbol: function (row) {
                             return "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/" + row.symbol + "'\>"
                                     + row.symbol + "</a> (<a target=_blank href='http://hotcopper.com.au/asx/" + row.symbol + "'>HC</a>)<br>" +
-                            Utility.formatMoney(row.mkt_cap)
+                                    "AU$ " + Utility.formatMoney(row.mkt_cap)
                         },
 
                         intra_day: '<a href="javascript:void(0);" ' +
@@ -185,7 +260,7 @@
                     'symbol',
                     'headline',
                     'price_sensitive',
-                    'one_year_price',
+                    'price_information',
                     'published_date',
                     'intra_day',
                     'weekly'
@@ -200,6 +275,18 @@
             format: function (value) {
                 return Utility.formatMoney(value)
             },
+            fetchLivePrice: function (symbol) {
+                if (!symbol) {
+                    alert('No instrument supplied')
+                    return false
+                }
+
+                quote.set('symbol', symbol)
+                quote.fetch()
+                this.livePriceData = quote.toJSON()
+
+                this.showLivePrice = true
+            },
             fetch: function () {
                 this.screener.fetch(this.filters)
                 this.$refs.table.data = this.screener.toJSON()
@@ -211,7 +298,7 @@
             this.fields = fields.toJSON()
 
             // Set up start and end date default values to the range
-            _.each(this.fields, function(f) {
+            _.each(this.fields, function (f) {
                 if (f.field == 'created_at') {
                     // Set min, max for the date picker
                     this.filters[f.field] = {

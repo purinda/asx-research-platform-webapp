@@ -1,5 +1,5 @@
 var Vue = require('vue')
-import {alert, modal, datepicker} from 'vue-strap'
+import {alert, modal, datepicker, popover} from 'vue-strap'
 
 /**
  * Install/Enable Plugins in the Global Vue context
@@ -18,6 +18,7 @@ function install() {
     Vue.component('alert', alert)
     Vue.component('modal', modal)
     Vue.component('datepicker', datepicker)
+    Vue.component('popover', popover)
 
     // Load spinner plugin for jQuery AJAX calls
     require('../assets/plugins/spinner')
