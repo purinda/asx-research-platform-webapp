@@ -154,10 +154,10 @@
                                     "AU$ " + Utility.humanFriendlyNumber(row.mkt_cap)
                         },
 
-                        chart: '<a class="btn btn-xs btn-info" href="javascript:void(0);" ' +
-                        '@click=\'this.$parent.enlarge("{static_chart_intraday}")\'>Daily</a>&nbsp;' +
-                        '<a class="btn btn-xs btn-info" href="javascript:void(0);" ' +
-                        '@click=\'this.$parent.enlarge("{static_chart_7d}")\'>7 Day</a>',
+                        chart: '<div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-info"' +
+                        '@click=\'this.$parent.enlarge("{static_chart_intraday}")\'>Daily</a>' +
+                        '<button type="button" class="btn btn-sm btn-info"' +
+                        '@click=\'this.$parent.enlarge("{static_chart_7d}")\'>7 Day</button></div>',
                     },
                     listColumns: {
                         price_sensitive: [
