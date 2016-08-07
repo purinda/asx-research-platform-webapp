@@ -17,6 +17,9 @@ router.map({
     '/': {
         component: require('src/components/dashboard.vue')
     },
+    '/impulsive': {
+        component: require('src/components/impulsive/index.vue')
+    },
     '/announcements': {
         component: require('src/components/announcements/index.vue')
     },

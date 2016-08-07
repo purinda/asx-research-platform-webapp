@@ -18,5 +18,10 @@ module.exports = [
         name: 'Screener',
         link: '/screener',
         icon: 'fa-cogs'
-    }
+    },
+    {
+        name: 'Impulsive Instruments',
+        link: '/impulsive',
+        icon: 'fa-cogs'
+    },
 ]
