@@ -1,26 +1,5 @@
-<style>
-    div.row label {
-        padding-left: 15px;
-    }
-
-    form button {
-        padding-top: 20px;
-    }
-
-    .year-low {
-        color: orangered;
-    }
-
-    .year-high {
-        color: green;
-    }
-
-    .current-price {
-        color: dimgray;
-    }
-</style>
 <template>
-    <form>
+    <form class="screener">
         <div v-for="field in fields" class="row">
             <!-- Range filters -->
             <div v-if="field.type == 'RANGE'">
@@ -223,15 +202,15 @@
                                 return '';
                             }
                         },
-                        price_information: "<span class='year-low'>{year_low}</span>, " +
-                        "<span class='current-price'>{last_trade_price}</span>, " +
-                        "<span class='year-high'>{year_high}</span><br>" +
-                        "<button @click='this.$parent.fetchLivePrice(\"{symbol}\")' type='button' class='btn btn-danger btn-xs'>Live Price</button>",
+                        price_information: "<span class='label label-danger'>{year_low}</span>&nbsp;" +
+                        "<span class='label label-default'>{last_trade_price}</span>&nbsp;" +
+                        "<span class='label label-success'>{year_high}</span><br>" +
+                        "<button @click='this.$parent.fetchLivePrice(\"{symbol}\")' type='button' class='btn btn-danger btn-xs btn-block btn-live-price'>Live Price</button>",
 
                         symbol: function (row) {
                             return "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/" + row.symbol + "'\>"
                                     + row.symbol + "</a> (<a target=_blank href='http://hotcopper.com.au/asx/" + row.symbol + "'>HC</a>)<br>" +
-                                    "AU$ " + Utility.humanFriendlyNumber(row.mkt_cap)
+                                    "AU$ " + Utility.shortNumber(row.mkt_cap)
                         },
 
                         intra_day: '<a href="javascript:void(0);" ' +
@@ -273,7 +252,7 @@
                 this.chartLarge = true
             },
             format: function (value) {
-                return Utility.humanFriendlyNumber(value)
+                return Utility.shortNumber(value)
             },
             fetchLivePrice: function (symbol) {
                 if (!symbol) {

@@ -5,6 +5,7 @@ require("font-awesome-webpack")
 require("assets/adminLTE/css/AdminLTE.css")
 require("assets/adminLTE/css/skins/_all-skins.css")
 require("icheck/skins/square/blue.css")
+require("../assets/scss/style.scss")
 
 /**
  * Register platform specific core Javascripts here, which are the base requirement for the

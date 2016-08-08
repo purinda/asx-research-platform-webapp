@@ -1,24 +1,3 @@
-<style>
-    div.row label {
-        padding-left: 15px;
-    }
-
-    form button {
-        padding-top: 20px;
-    }
-
-    .year-low {
-        color: orangered;
-    }
-
-    .year-high {
-        color: green;
-    }
-
-    .current-price {
-        color: dimgray;
-    }
-</style>
 <template>
     <div class="row">
         <v-client-table :data="data" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
@@ -131,6 +110,7 @@
                 chartLargeUrl: '',
                 tableOptions: {
                     perPage: 100,
+                    'orderBy.column': 'gain',
                     templates: {
                         headline: function (row) {
                             if (row.headline) {
@@ -140,24 +120,26 @@
                                 return '';
                             }
                         },
-                        volume: "Now: {volume} <br> Avg: {avg_daily_volume}",
+                        volume: function (row) {
+                            return "Now: " + Utility.commaSeparatedNumber(row.volume) + "<br> Avg: " + Utility.commaSeparatedNumber(row.avg_daily_volume)
+                        },
                         volume_change_percentage: "{volume_change_percentage}%",
                         movement_percent: "{movement_percent}%",
-                        price_information: "<span class='year-low'>{year_low}</span>, " +
-                        "<span class='current-price'>{ask}</span>, " +
-                        "<span class='year-high'>{year_high}</span><br>" +
-                        "<button @click='this.$parent.fetchLivePrice(\"{symbol}\")' type='button' class='btn btn-danger btn-xs'>Live Price</button>",
+                        price_information: "<span class='label label-danger'>{year_low}</span>&nbsp;" +
+                        "<span class='label label-default'>{ask}</span>&nbsp;" +
+                        "<span class='label label-success'>{year_high}</span><br>" +
+                        "<button @click='this.$parent.fetchLivePrice(\"{symbol}\")' type='button' class='btn btn-danger btn-xs btn-block btn-live-price'>Live Price</button>",
 
                         symbol: function (row) {
                             return "<a target=_blank href='http://www.asx.com.au/asx/research/company.do#!/" + row.symbol + "'\>"
                                     + row.symbol + "</a> (<a target=_blank href='http://hotcopper.com.au/asx/" + row.symbol + "'>HC</a>)<br>" +
-                                    "AU$ " + Utility.humanFriendlyNumber(row.mkt_cap)
+                                    "AU$ " + Utility.shortNumber(row.mkt_cap)
                         },
 
-                        chart: '<div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-info"' +
-                        '@click=\'this.$parent.enlarge("{static_chart_intraday}")\'>Daily</a>' +
+                        chart: '<button type="button" class="btn btn-sm btn-info"' +
+                        '@click=\'this.$parent.enlarge("{static_chart_intraday}")\'>Daily</button>&nbsp;' +
                         '<button type="button" class="btn btn-sm btn-info"' +
-                        '@click=\'this.$parent.enlarge("{static_chart_7d}")\'>7 Day</button></div>',
+                        '@click=\'this.$parent.enlarge("{static_chart_7d}")\'>7 Day</button>',
                     },
                     listColumns: {
                         price_sensitive: [
@@ -192,7 +174,10 @@
                 this.chartLarge = true
             },
             format: function (value) {
-                return Utility.humanFriendlyNumber(value)
+                return Utility.shortNumber(value)
+            },
+            formatPercentage: function (value) {
+                return Utility.formatPercentage(value)
             },
             fetchLivePrice: function (symbol) {
                 if (!symbol) {
