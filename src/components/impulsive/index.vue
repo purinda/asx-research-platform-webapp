@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row analytical-data-table">
         <v-client-table :data="data" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
     </div>
 
@@ -121,10 +121,26 @@
                             }
                         },
                         volume: function (row) {
-                            return "Now: " + Utility.commaSeparatedNumber(row.volume) + "<br> Avg: " + Utility.commaSeparatedNumber(row.avg_daily_volume)
+                            return Utility.shortNumber(row.volume) + " (avg " + Utility.shortNumber(row.avg_daily_volume) + ')'
                         },
-                        volume_change_percentage: "{volume_change_percentage}%",
-                        movement_percent: "{movement_percent}%",
+                        volume_change_percentage: function (row) {
+                            if (row.volume_change_percentage > 0) {
+                                return "<h4><span class='label label-success'>" + row.volume_change_percentage + "%</span></h4>"
+                            } else if (row.volume_change_percentage == 0) {
+                                return "<h4><span class='label label-default'>" + row.volume_change_percentage + "%</span></h4>"
+                            } else if (row.volume_change_percentage < 0) {
+                                return "<h4><span class='label label-danger'>" + row.volume_change_percentage + "%</span></h4>"
+                            }
+                        },
+                        movement_percent: function (row) {
+                            if (row.movement_percent > 0) {
+                                return "<h4><span class='label label-success'>" + row.movement_percent + "%</span></h4>"
+                            } else if (row.movement_percent == 0) {
+                                return "<h4><span class='label label-default'>" + row.movement_percent + "%</span></h4>"
+                            } else if (row.movement_percent < 0) {
+                                return "<h4><span class='label label-danger'>" + row.movement_percent + "%</span></h4>"
+                            }
+                        },
                         price_information: "<span class='label label-danger'>{year_low}</span>&nbsp;" +
                         "<span class='label label-default'>{ask}</span>&nbsp;" +
                         "<span class='label label-success'>{year_high}</span><br>" +
