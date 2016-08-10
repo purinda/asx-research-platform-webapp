@@ -127,7 +127,7 @@ class Auth extends Backbone.Model {
         var auth = this
 
         Backbone.$.ajaxSetup({
-            async: false,
+            async: true,
             beforeSend(jqXHR) {
                 jqXHR.setRequestHeader('Accept', 'application/json');
                 jqXHR.setRequestHeader('Content-Type', 'application/json');

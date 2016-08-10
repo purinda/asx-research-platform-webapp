@@ -156,6 +156,14 @@
                         '@click=\'this.$parent.enlarge("{static_chart_intraday}")\'>Daily</button>&nbsp;' +
                         '<button type="button" class="btn btn-sm btn-info"' +
                         '@click=\'this.$parent.enlarge("{static_chart_7d}")\'>7 Day</button>',
+
+                        published_date: function(row) {
+                            if (moment(row.published_date).isSame(moment(), 'day')) {
+                                return "<h4><span class='label label-success'>" + row.published_date + "</span></h4>"
+                            } else {
+                                return "<h4><span class='label label-default'>" + row.published_date + "</span></h4>"
+                            }
+                        }
                     },
                     listColumns: {
                         price_sensitive: [

@@ -29,8 +29,8 @@ var params = [
     },
     {
         name: 'endpoint',
-        // value: 'http://asx.shared/'
-        value: 'http://asx-api.purinda.com/'
+        value: 'http://asx.shared/'
+        // value: 'http://asx-api.purinda.com/'
     },
     {
         name: 'datetime-format',

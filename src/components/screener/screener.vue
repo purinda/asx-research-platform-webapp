@@ -164,7 +164,6 @@
             <button type="button" class="btn btn-default" @click='showLivePrice = false'>Close</button>
         </div>
     </modal>
-
 </template>
 
 <script>
@@ -220,6 +219,14 @@
                         weekly: '<a href="javascript:void(0);" ' +
                         '@click=\'this.$parent.enlarge("{static_chart_7d}")\'>' +
                         '<img class="img-thumbnail" width="100%" src="{static_chart_7d}"/></a>',
+
+                        published_date: function (row) {
+                            if (moment(row.published_date).isSame(moment(), 'day')) {
+                                return "<h4><span class='label label-success'>" + row.published_date + "</span></h4>"
+                            } else {
+                                return "<h4><span class='label label-default'>" + row.published_date + "</span></h4>"
+                            }
+                        }
                     },
                     listColumns: {
                         price_sensitive: [
@@ -271,27 +278,36 @@
                 this.$refs.table.data = this.screener.toJSON()
             }
         },
-        created: function () {
-            // Load fields
-            fields.fetch()
-            this.fields = fields.toJSON()
-
-            // Set up start and end date default values to the range
-            _.each(this.fields, function (f) {
-                if (f.field == 'created_at') {
-                    // Set min, max for the date picker
-                    this.filters[f.field] = {
-                        enabled: true,
-                        min: f.min,
-                        max: f.max
-                    }
-                }
-            }.bind(this))
-        },
         route: {
-            activate: function (t) {
-                this.$parent.$parent.$data.title = 'Securities and Announcements Screener'
+            waitForData: true,
+            /**
+             * Async data loading for filters section
+             * @returns {*|Promise.<TResult>}
+             */
+            data: function () {
+                return fields.fetch().then(function(xhr) {
+                    var result = {
+                        fields: xhr['data'],
+                        filters: {}
+                    }
 
+                    // Set up start and end date default values to the range
+                    _.each(result.fields, function (f) {
+                        if (f.field == 'created_at') {
+                            // Set min, max for the date picker
+                            result.filters[f.field] = {
+                                enabled: true,
+                                min: f.min,
+                                max: f.max
+                            }
+                        }
+                    }.bind(result))
+
+                    return result
+                }.bind(this))
+            },
+            activate: function(t) {
+                this.$parent.$parent.$data.title = 'Securities and Announcements Screener'
                 t.next()
             }
         }
