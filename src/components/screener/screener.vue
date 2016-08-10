@@ -262,20 +262,21 @@
                 return Utility.shortNumber(value)
             },
             fetchLivePrice: function (symbol) {
+                quote.set('symbol', symbol)
                 if (!symbol) {
                     alert('No instrument supplied')
                     return false
                 }
 
-                quote.set('symbol', symbol)
-                quote.fetch()
-                this.livePriceData = quote.toJSON()
-
-                this.showLivePrice = true
+                quote.fetch().then(function(xhr) {
+                    this.livePriceData = xhr['data']
+                    this.showLivePrice = true
+                }.bind(this))
             },
             fetch: function () {
-                this.screener.fetch(this.filters)
-                this.$refs.table.data = this.screener.toJSON()
+                this.screener.fetch(this.filters).then(function(xhr) {
+                    this.$refs.table.data = xhr['data']
+                }.bind(this))
             }
         },
         route: {
