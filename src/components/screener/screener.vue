@@ -1,5 +1,5 @@
 <template>
-    <form class="screener">
+    <form class="screener hidden-sm hidden-md">
         <div v-for="field in fields" class="row">
             <!-- Range filters -->
             <div v-if="field.type == 'RANGE'">
