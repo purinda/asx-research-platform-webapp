@@ -73,16 +73,31 @@
         },
         methods: {
             forceFetch: function (sectorId) {
-                this.announcementCollection = new SectorAnnouncementCollection(sectorId)
-                this.announcementCollection.fetch()
+                var announcementCollection = new SectorAnnouncementCollection(sectorId)
+
+                return announcementCollection.fetch().then(function (xhr) {
+                    var result = {
+                        data: xhr['data']
+                    }
+
+                    this.$parent.$parent.$data.title = result['data'][0].sector + ' Sector'
+                    return result
+                }.bind(this))
             }
         },
         route: {
+            waitForData: true,
+            /**
+             * Async data loading
+             * @returns {*|Promise.<TResult>}
+             */
+            data: function () {
+                var sectorId = this.$route.params.sector
+                return this.forceFetch(sectorId)
+            },
             activate: function (t) {
                 // Fetch from the API endpoint
-                this.forceFetch(this.$route.params.sector)
-                this.data = this.announcementCollection.toJSON()
-                this.$parent.$parent.$data.title = this.data[0].sector + ' Sector'
+                this.$parent.$parent.$data.title = 'Loading Sector Announcements & Companies'
 
                 t.next()
             }

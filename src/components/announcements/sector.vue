@@ -39,23 +39,27 @@
             }
         },
         methods: {
-            forceFetch: function() {
-                if (this.sectorCollection == null) {
-                    this.sectorCollection = new SectorCollection
-                }
+            forceFetch: function () {
+                return this.sectorCollection.fetch().then(function (xhr) {
+                    var result = {
+                        data: xhr['data']
+                    }
 
-                this.sectorCollection.fetch()
+                    return result
+                }.bind(this))
             }
         },
         route: {
+            waitForData: true,
+            /**
+             * Async data loading for filters section
+             * @returns {*|Promise.<TResult>}
+             */
+            data: function () {
+                return this.forceFetch()
+            },
             activate: function (t) {
                 this.$parent.$parent.$data.title = 'Announcements Grouped By Sector'
-
-                // Fetch from the API endpoint
-                this.forceFetch()
-
-                // Reload vue-table
-                this.data = this.sectorCollection.toJSON()
 
                 t.next()
             }

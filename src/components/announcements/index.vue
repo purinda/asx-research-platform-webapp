@@ -24,6 +24,13 @@
                     perPage: 100,
                     templates: {
                         view: "<a target=_blank href='http://www.asx.com.au{url}'>PDF</a>",
+                        published_date: function (row) {
+                            if (moment(row.published_date).isSame(moment(), 'day')) {
+                                return "<h4><span class='label label-success'>" + row.published_date + "</span></h4>"
+                            } else {
+                                return "<h4><span class='label label-default'>" + row.published_date + "</span></h4>"
+                            }
+                        }
                     },
                     listColumns: {
                         price_sensitive: [
@@ -41,19 +48,27 @@
             }
         },
         methods: {
-            forceFetch: function() {
-                this.announcementCollection.fetch()
+            forceFetch: function () {
+                return this.announcementCollection.fetch().then(function (xhr) {
+                    var result = {
+                        data: xhr['data']
+                    }
+
+                    return result
+                }.bind(this))
             }
         },
         route: {
+            waitForData: true,
+            /**
+             * Async data loading for filters section
+             * @returns {*|Promise.<TResult>}
+             */
+            data: function () {
+                return this.forceFetch()
+            },
             activate: function (t) {
                 this.$parent.$parent.$data.title = 'Weekly Announcements'
-
-                // Fetch from the API endpoint
-                this.forceFetch()
-
-                // Reload vue-table
-                this.data = this.announcementCollection.toJSON()
 
                 t.next()
             }

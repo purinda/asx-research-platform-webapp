@@ -1,4 +1,16 @@
 <template>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="alert alert-info" role="alert">
+                Data displayed after 16:00 could be delayed since the markets would be closed after hours.
+            </div>
+        </div>
+
+        <div class="col-xs-12">
+            <button class="btn btn-default" @click="forceFetch()">Refresh</button>
+        </div>
+    </div>
+
     <div class="row analytical-data-table">
         <v-client-table :data="data" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
     </div>
@@ -157,7 +169,7 @@
                         '<button type="button" class="btn btn-sm btn-info"' +
                         '@click=\'this.$parent.enlarge("{static_chart_7d}")\'>7 Day</button>',
 
-                        published_date: function(row) {
+                        published_date: function (row) {
                             if (moment(row.published_date).isSame(moment(), 'day')) {
                                 return "<h4><span class='label label-success'>" + row.published_date + "</span></h4>"
                             } else {
@@ -204,30 +216,38 @@
                 return Utility.formatPercentage(value)
             },
             fetchLivePrice: function (symbol) {
+                quote.set('symbol', symbol)
                 if (!symbol) {
                     alert('No instrument supplied')
                     return false
                 }
 
-                quote.set('symbol', symbol)
-                quote.fetch()
-                this.livePriceData = quote.toJSON()
-
-                this.showLivePrice = true
+                quote.fetch().then(function (xhr) {
+                    this.livePriceData = xhr['data']
+                    this.showLivePrice = true
+                }.bind(this))
             },
             forceFetch: function () {
-                this.collection.fetch()
+                return this.collection.fetch().then(function (xhr) {
+                    var result = {
+                        data: xhr['data']
+                    }
+
+                    return result
+                }.bind(this))
             }
         },
         route: {
+            waitForData: true,
+            /**
+             * Async data loading for filters section
+             * @returns {*|Promise.<TResult>}
+             */
+            data: function () {
+                return this.forceFetch()
+            },
             activate: function (t) {
                 this.$parent.$parent.$data.title = 'Impulsive Securities & Announcements'
-
-                // Fetch from the API endpoint
-                this.forceFetch()
-
-                // Reload vue-table
-                this.data = this.collection.toJSON()
 
                 t.next()
             }
