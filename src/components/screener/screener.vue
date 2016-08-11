@@ -1,5 +1,5 @@
 <template>
-    <form class="screener hidden-sm hidden-md">
+    <form v-show="showFilters" class="screener">
         <div v-for="field in fields" class="row">
             <!-- Range filters -->
             <div v-if="field.type == 'RANGE'">
@@ -72,11 +72,17 @@
                 </form>
             </div>
         </div>
-
-        <br>
-        <button @click="fetch" type="button" class="btn btn-primary pull-left">Lookup</button>
-        <br>
     </form>
+
+    <br>
+    <div class="btn-group">
+        <button @click="showFilters = !showFilters" type="button" class="btn btn-primary pull-left">
+            <span v-show="!showFilters">Show Filters</span>
+            <span v-show="showFilters">Hide Filters</span>
+        </button>
+        <button @click="fetch" type="button" class="btn btn-primary pull-left">Lookup</button>
+    </div>
+    <br>
 
     <div class="row">
         <v-client-table :data="[]" :columns="columns" :options="tableOptions" v-ref:table></v-client-table>
@@ -183,6 +189,7 @@
         data: function () {
             return {
                 screener: screener,
+                showFilters: false,
                 chartLarge: false,
                 showLivePrice: false,
                 livePriceData: quote.toJSON(),
@@ -191,7 +198,14 @@
                 fields: [],
                 debug: true,
                 tableOptions: {
-                    perPage: 100,
+                    orderBy: {
+                        descending: true,
+                        column: 'published_date'
+                    },
+                    pagination: {
+                        dropdown: false
+                    },
+                    perPage: 75,
                     templates: {
                         headline: function (row) {
                             if (row.headline) {
@@ -268,13 +282,13 @@
                     return false
                 }
 
-                quote.fetch().then(function(xhr) {
+                quote.fetch().then(function (xhr) {
                     this.livePriceData = xhr['data']
                     this.showLivePrice = true
                 }.bind(this))
             },
             fetch: function () {
-                this.screener.fetch(this.filters).then(function(xhr) {
+                this.screener.fetch(this.filters).then(function (xhr) {
                     this.$refs.table.data = xhr['data']
                 }.bind(this))
             }
@@ -286,7 +300,7 @@
              * @returns {*|Promise.<TResult>}
              */
             data: function () {
-                return fields.fetch().then(function(xhr) {
+                return fields.fetch().then(function (xhr) {
                     var result = {
                         fields: xhr['data'],
                         filters: {}
@@ -307,7 +321,7 @@
                     return result
                 }.bind(this))
             },
-            activate: function(t) {
+            activate: function (t) {
                 this.$parent.$parent.$data.title = 'Securities and Announcements Screener'
                 t.next()
             }

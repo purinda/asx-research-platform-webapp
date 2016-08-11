@@ -7,7 +7,7 @@
         </div>
 
         <div class="col-xs-12">
-            <button class="btn btn-default" @click="forceFetch()">Refresh</button>
+            <button class="btn btn-default" @click="refreshTable()">Refresh</button>
         </div>
     </div>
 
@@ -227,6 +227,11 @@
                     this.showLivePrice = true
                 }.bind(this))
             },
+            refreshTable: function() {
+                this.forceFetch().done(function(xhr) {
+                    this.data = xhr.data
+                }.bind(this))
+            },
             forceFetch: function () {
                 return this.collection.fetch().then(function (xhr) {
                     var result = {
@@ -234,7 +239,7 @@
                     }
 
                     return result
-                }.bind(this))
+                })
             }
         },
         route: {
