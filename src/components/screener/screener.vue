@@ -202,9 +202,6 @@
                         descending: true,
                         column: 'published_date'
                     },
-                    pagination: {
-                        dropdown: false
-                    },
                     perPage: 75,
                     templates: {
                         headline: function (row) {
