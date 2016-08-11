@@ -1,5 +1,47 @@
-var path = require('path');
-var webpack = require('webpack');
+var path = require('path')
+var webpack = require('webpack')
+var isProduction = (process.env.NODE_ENV === 'production')
+
+/**
+ * Default plugins
+ *
+ * @type {*[]}
+ */
+var plugins = [
+    new webpack.ProvidePlugin({
+        // App Configuration
+        'appParameters': path.resolve(__dirname, 'config/parameters.js'),
+
+        // App auth provider
+        'auth': path.resolve(__dirname, 'src/lib/auth.js'),
+
+        // Register jQuery as a global module
+        '$': 'jquery',
+        'jQuery': 'jquery',
+        'window.jQuery': 'jquery',
+        'window.$': 'jquery',
+
+        // MomentJS
+        "window.moment": "moment",
+        "moment": "moment",
+
+        // Register Backbone.Js and Underscore
+        '_': 'underscore',
+        'window._': 'underscore',
+        'Backbone': "backbone"
+    })
+]
+
+/**
+ * Append production env plugins
+ */
+if (isProduction) {
+    plugins.push(new webpack.optimize.UglifyJsPlugin({
+        compress: {
+            warnings: false
+        }
+    }))
+}
 
 module.exports = {
     entry: {
@@ -10,7 +52,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, './dist/'),
         publicPath: '/dist/',
-        filename: 'build.js'
+        filename: isProduction ? 'build.min.js' : 'build.js'
     },
     resolve: {
         extensions: ['', '.js', '.vue'],
@@ -72,30 +114,7 @@ module.exports = {
         colors: true
     },
     devtool: 'eval-source-map',
-    plugins: [
-        new webpack.ProvidePlugin({
-            // App Configuration
-            'appParameters': path.resolve(__dirname, 'config/parameters.js'),
-
-            // App auth provider
-            'auth': path.resolve(__dirname, 'src/lib/auth.js'),
-
-            // Register jQuery as a global module
-            '$': 'jquery',
-            'jQuery': 'jquery',
-            'window.jQuery': 'jquery',
-            'window.$': 'jquery',
-
-            // MomentJS
-            "window.moment": "moment",
-            "moment": "moment",
-
-            // Register Backbone.Js and Underscore
-            '_': 'underscore',
-            'window._': 'underscore',
-            'Backbone': "backbone"
-        })
-    ],
+    plugins: plugins,
     vue: {
         loaders: {
             js: 'babel'

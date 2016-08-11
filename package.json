@@ -4,9 +4,9 @@
   "description": "ASX announcements and market analysing tool",
   "main": "index.html",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.dev.config.js --inline --hot --progress",
-    "test": "webpack --config webpack.dev.config.js --target node && node_modules/mocha/bin/mocha dist/testsBuild.js",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules --config webpack.dev.config.js"
+    "dev": "webpack-dev-server --config webpack.config.js --inline --hot --progress",
+    "test": "webpack --config webpack.config.js --target node && node_modules/mocha/bin/mocha dist/testsBuild.js",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules --optimize-minimize --config webpack.config.js"
   },
   "author": "Purinda Gunasekara",
   "license": "GPL",
