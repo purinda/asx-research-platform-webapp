@@ -202,7 +202,7 @@
                         descending: true,
                         column: 'published_date'
                     },
-                    perPage: 75,
+                    perPage: 100,
                     templates: {
                         headline: function (row) {
                             if (row.headline) {

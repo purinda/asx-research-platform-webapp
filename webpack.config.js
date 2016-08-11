@@ -52,7 +52,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, './dist/'),
         publicPath: '/dist/',
-        filename: isProduction ? 'build.min.js' : 'build.js'
+        filename: 'build.js'
     },
     resolve: {
         extensions: ['', '.js', '.vue'],
